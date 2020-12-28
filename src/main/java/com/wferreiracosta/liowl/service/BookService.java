@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface BookService {
 
-	Book save(Book any);
+	public Book save(Book book);
 }
