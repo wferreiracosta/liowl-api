@@ -8,6 +8,7 @@ import com.wferreiracosta.liowl.api.dto.BookDTO;
 import com.wferreiracosta.liowl.model.entity.Book;
 import com.wferreiracosta.liowl.service.BookService;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,5 +70,20 @@ public class BookControllerTest {
             .andExpect(jsonPath("title").value(dto.getTitle()))
             .andExpect(jsonPath("author").value(dto.getAuthor()))
             .andExpect(jsonPath("isbn").value(dto.getIsbn()));
+    }
+
+    @Test
+    @DisplayName("Deve lançar erro de validação quando não houver dados suficientes para criação de livro")
+    public void createInvalidBookTest() throws Exception{
+        String json = new ObjectMapper().writeValueAsString(new BookDTO());
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(BOOK_API)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(json);
+        
+        mvc.perform(request)
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("errors", Matchers.hasSize(3)));
     }
 }
