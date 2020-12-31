@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import com.wferreiracosta.liowl.api.dto.BookDTO;
 import com.wferreiracosta.liowl.api.exception.ApiErrors;
+import com.wferreiracosta.liowl.exception.BusinessException;
 import com.wferreiracosta.liowl.model.entity.Book;
 import com.wferreiracosta.liowl.service.BookService;
 
@@ -45,5 +46,12 @@ public class BookController {
         BindingResult bindingResult = ex.getBindingResult();
         return new ApiErrors(bindingResult);
     }
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handlerBusinessException(BusinessException ex){
+        return new ApiErrors(ex);
+    }
+
 
 }
