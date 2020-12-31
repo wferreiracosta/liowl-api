@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/books")
@@ -44,8 +45,10 @@ public class BookController {
 
     @GetMapping("{id}")
     public BookDTO get(@PathVariable Long id){
-        Book book = this.service.getById(id).get();
-        return modelMapper.map(book, BookDTO.class);
+        return this.service
+            .getById(id)
+            .map( book -> modelMapper.map(book, BookDTO.class) )
+            .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
