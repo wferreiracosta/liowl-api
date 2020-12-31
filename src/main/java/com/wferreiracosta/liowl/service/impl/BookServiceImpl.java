@@ -1,5 +1,6 @@
 package com.wferreiracosta.liowl.service.impl;
 
+import com.wferreiracosta.liowl.exception.BusinessException;
 import com.wferreiracosta.liowl.model.entity.Book;
 import com.wferreiracosta.liowl.model.repository.BookRepository;
 import com.wferreiracosta.liowl.service.BookService;
@@ -17,6 +18,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book save(Book book) {
+        if (this.repository.existsByIsbn(book.getIsbn())){
+            throw new BusinessException("ISBN já cadastrada");
+        }
         return this.repository.save(book);
     }
 
