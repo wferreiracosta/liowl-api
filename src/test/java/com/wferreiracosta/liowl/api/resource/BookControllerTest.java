@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wferreiracosta.liowl.api.dto.BookDTO;
 import com.wferreiracosta.liowl.exception.BusinessException;
@@ -60,7 +62,9 @@ public class BookControllerTest {
             .id(10L)
             .build();
 
-        BDDMockito.given(service.save(Mockito.any(Book.class))).willReturn(savedBook);
+        BDDMockito
+            .given(service.save(Mockito.any(Book.class)))
+            .willReturn(savedBook);
 
         String json = new ObjectMapper().writeValueAsString(dto);
 
@@ -101,7 +105,8 @@ public class BookControllerTest {
 
         String errorMessage = "ISBN já cadastrada";
 
-        BDDMockito.given(this.service.save(Mockito.any(Book.class)))
+        BDDMockito
+            .given(this.service.save(Mockito.any(Book.class)))
             .willThrow(new BusinessException(errorMessage));
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(BOOK_API)
@@ -113,5 +118,34 @@ public class BookControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("errors", hasSize(1)))
             .andExpect(jsonPath("errors[0]").value(errorMessage));
+    }
+
+    @Test
+    @DisplayName("Deve obter informações de um livro")
+    public void getBookDetailsTest() throws Exception {
+        long id = 1L;
+
+        Book book = Book.builder()
+            .id(id)
+            .title(this.createNewBook().getTitle())
+            .author(this.createNewBook().getAuthor())
+            .isbn(this.createNewBook().getIsbn())
+            .build();
+
+        BDDMockito
+            .given(this.service.getById(id))
+            .willReturn(Optional.of(book));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(BOOK_API.concat("/"+id))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("id").isNotEmpty())
+            .andExpect(jsonPath("id").value(book.getId()))
+            .andExpect(jsonPath("title").value(book.getTitle()))
+            .andExpect(jsonPath("author").value(book.getAuthor()))
+            .andExpect(jsonPath("isbn").value(book.getIsbn()));
     }
 }

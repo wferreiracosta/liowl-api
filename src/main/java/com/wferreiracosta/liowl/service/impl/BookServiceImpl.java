@@ -1,5 +1,7 @@
 package com.wferreiracosta.liowl.service.impl;
 
+import java.util.Optional;
+
 import com.wferreiracosta.liowl.exception.BusinessException;
 import com.wferreiracosta.liowl.model.entity.Book;
 import com.wferreiracosta.liowl.model.repository.BookRepository;
@@ -18,10 +20,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book save(Book book) {
-        if (this.repository.existsByIsbn(book.getIsbn())){
+        if (this.repository.existsByIsbn(book.getIsbn())) {
             throw new BusinessException("ISBN já cadastrada");
         }
         return this.repository.save(book);
+    }
+
+    @Override
+    public Optional<Book> getById(long id) {
+        return Optional.empty();
     }
 
 }
