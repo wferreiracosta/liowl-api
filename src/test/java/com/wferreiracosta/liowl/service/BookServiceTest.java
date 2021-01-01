@@ -1,5 +1,7 @@
 package com.wferreiracosta.liowl.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -30,31 +32,21 @@ public class BookServiceTest {
     BookRepository repository;
 
     private Book createValidBook() {
-        return Book.builder()
-            .isbn("123")
-            .author("Fulano")
-            .title("As aventuras")
-            .build();
+        return Book.builder().isbn("123").author("Fulano").title("As aventuras").build();
     }
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         this.service = new BookServiceImpl(repository);
     }
-    
+
     @Test
     @DisplayName("Deve salvar um livro")
-    public void saveBook(){
+    public void saveBook() {
         Book book = createValidBook();
         Mockito.when(this.repository.existsByIsbn(Mockito.anyString())).thenReturn(false);
         Mockito.when(this.repository.save(book))
-            .thenReturn(Book.builder()
-                .id(11L)
-                .isbn("123")
-                .author("Fulano")
-                .title("As aventuras")
-                .build()
-        );
+                .thenReturn(Book.builder().id(11L).isbn("123").author("Fulano").title("As aventuras").build());
 
         Book savedBook = service.save(book);
 
@@ -66,23 +58,21 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("Deve lançar erro de negocio ao tentar salvar um livro com ISBN duplicado")
-    public void shouldNotSaveABookWithDuplicatedISBN(){
+    public void shouldNotSaveABookWithDuplicatedISBN() {
         Book book = this.createValidBook();
         Mockito.when(this.repository.existsByIsbn(Mockito.anyString())).thenReturn(true);
-        Throwable exception = Assertions.catchThrowable( () -> this.service.save(book) );
-        
+        Throwable exception = Assertions.catchThrowable(() -> this.service.save(book));
+
         String errorMessage = "ISBN já cadastrada";
 
-        assertThat(exception)
-                .isInstanceOf(BusinessException.class)
-                .hasMessage(errorMessage);
+        assertThat(exception).isInstanceOf(BusinessException.class).hasMessage(errorMessage);
 
         Mockito.verify(this.repository, Mockito.never()).save(book);
     }
 
     @Test
     @DisplayName("Deve obter um livro por Id")
-    public void getByIdTest(){
+    public void getByIdTest() {
         Long id = 1L;
         Book book = this.createValidBook();
         book.setId(id);
@@ -99,7 +89,7 @@ public class BookServiceTest {
 
     @Test
     @DisplayName("Deve retornar vazio ao obter um livro por id quando ele não existe na base.")
-    public void bookNotFoundByIdTest(){
+    public void bookNotFoundByIdTest() {
         Long id = 1L;
         Mockito.when(this.repository.findById(id)).thenReturn(Optional.empty());
 
@@ -107,4 +97,21 @@ public class BookServiceTest {
 
         assertThat(book.isPresent()).isFalse();
     }
+
+    @Test
+    @DisplayName("Deve deletar um livro")
+    public void deleteBookTest() {
+        Book book = Book.builder().id(11L).build();
+        assertDoesNotThrow(() -> this.service.delete(book));
+        Mockito.verify(this.repository, Mockito.times(1)).delete(book);
+    }
+
+    @Test
+    @DisplayName("Deve ocorrer erro ao tentar apagar um livro inexistente")
+    public void deleteInvalidBookTest(){
+        Book book = new Book();
+        assertThrows(IllegalArgumentException.class, () -> this.service.delete(book));
+        Mockito.verify(this.repository, Mockito.never()).delete(book);
+    }
+
 }
