@@ -1,13 +1,14 @@
 package com.wferreiracosta.liowl.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 import com.wferreiracosta.liowl.exception.BusinessException;
 import com.wferreiracosta.liowl.model.entity.Book;
@@ -21,6 +22,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -144,6 +149,30 @@ public class BookServiceTest {
         assertThat(book.getAuthor()).isEqualTo(updatedBook.getAuthor());
         assertThat(book.getIsbn()).isEqualTo(updatedBook.getIsbn());
         assertThat(book.getTitle()).isEqualTo(updatedBook.getTitle());
+    }
+
+    @Test
+    @DisplayName("Deve filtrar livros pelas propriedades")
+    @SuppressWarnings("unchecked")
+    public void findBookTest(){
+        //Cenario
+        Book book = this.createValidBook();
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        List<Book> list = Arrays.asList(book);
+        Page<Book> page = new PageImpl<Book>(list, pageRequest, 1);
+        Mockito.when(this.repository.findAll(Mockito.any(Example.class), Mockito.any(PageRequest.class)))
+            .thenReturn(page);
+
+        //Execução
+        Page<Book> result = this.service.find(book, pageRequest);
+
+        //Verificações
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent()).isEqualTo(list);
+        assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
+        assertThat(result.getPageable().getPageSize()).isEqualTo(10);
     }
 
 }
