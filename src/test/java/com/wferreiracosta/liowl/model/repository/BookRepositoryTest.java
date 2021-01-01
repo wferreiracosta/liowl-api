@@ -2,6 +2,8 @@ package com.wferreiracosta.liowl.model.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import com.wferreiracosta.liowl.model.entity.Book;
 
 import org.junit.jupiter.api.DisplayName;
@@ -26,14 +28,18 @@ public class BookRepositoryTest {
     @DisplayName("Deve retornar verdadeiro quando existir um livro na base com o ISBN informado")
     public void returnTrueWhenIsbnExists() {
         String isbn = "123";
-        Book book = Book.builder()
+        Book book = createNewBook(isbn);
+        this.entityManager.persist(book);
+        boolean existsByIsbn = this.repository.existsByIsbn(isbn);
+        assertThat(existsByIsbn).isTrue();
+    }
+
+    private Book createNewBook(String isbn) {
+        return Book.builder()
             .author("Fulano")
             .isbn(isbn)
             .title("Aventuras")
             .build();
-        this.entityManager.persist(book);
-        boolean existsByIsbn = this.repository.existsByIsbn(isbn);
-        assertThat(existsByIsbn).isTrue();
     }
 
     @Test
@@ -42,5 +48,16 @@ public class BookRepositoryTest {
         String isbn = "123";
         boolean existsByIsbn = this.repository.existsByIsbn(isbn);
         assertThat(existsByIsbn).isFalse();
+    }
+
+    @Test
+    @DisplayName("Deve obter um livro por id")
+    public void findByIdTest(){
+        Book book = this.createNewBook("123");
+        this.entityManager.persist(book);
+
+        Optional<Book> foundBook = this.repository.findById(book.getId());
+
+        assertThat(foundBook.isPresent()).isTrue();
     }
 }
