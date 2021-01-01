@@ -74,4 +74,15 @@ public class BookRepositoryTest {
         assertThat(savedBook.getIsbn()).isEqualTo(book.getIsbn());
         assertThat(savedBook.getTitle()).isEqualTo(book.getTitle());
     }
+
+    @Test
+    @DisplayName("Deve apagar um livro")
+    public void deleteBookTest(){
+        Book book = this.createNewBook("123");
+        this.entityManager.persist(book);
+        Book foundBook = this.entityManager.find(Book.class, book.getId());
+        this.repository.delete(foundBook);
+        Book deletedBook = this.entityManager.find(Book.class, book.getId());
+        assertThat(deletedBook).isNull();
+    }
 }
