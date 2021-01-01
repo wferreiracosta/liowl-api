@@ -7,6 +7,8 @@ import com.wferreiracosta.liowl.model.entity.Book;
 import com.wferreiracosta.liowl.model.repository.BookRepository;
 import com.wferreiracosta.liowl.service.BookService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,7 +35,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void delete(Book book) {
-        if(book == null || book.getId() == null){
+        if (book == null || book.getId() == null) {
             throw new IllegalArgumentException("Book id cant be null");
         }
         this.repository.delete(book);
@@ -41,10 +43,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book update(Book book) {
-        if(book == null || book.getId() == null){
+        if (book == null || book.getId() == null) {
             throw new IllegalArgumentException("Book id cant be null");
         }
         return this.repository.save(book);
+    }
+
+    @Override
+    public Page<Book> find(Book filter, Pageable pageRequest) {
+        return null;
     }
 
 }
