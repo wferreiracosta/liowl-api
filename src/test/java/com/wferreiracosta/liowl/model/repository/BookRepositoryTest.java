@@ -60,4 +60,18 @@ public class BookRepositoryTest {
 
         assertThat(foundBook.isPresent()).isTrue();
     }
+
+    @Test
+    @DisplayName("Deve salvar um livro")
+    public void saveBookTest(){
+        Book book = this.createNewBook("123");
+
+        Book savedBook = this.repository.save(book);
+
+        assertThat(savedBook.getId()).isNotNull();
+        assertThat(savedBook.getId()).isEqualTo(book.getId());
+        assertThat(savedBook.getAuthor()).isEqualTo(book.getAuthor());
+        assertThat(savedBook.getIsbn()).isEqualTo(book.getIsbn());
+        assertThat(savedBook.getTitle()).isEqualTo(book.getTitle());
+    }
 }
