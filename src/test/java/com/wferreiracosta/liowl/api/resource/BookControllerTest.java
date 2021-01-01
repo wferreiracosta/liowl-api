@@ -199,4 +199,67 @@ public class BookControllerTest {
         mvc.perform(request)
             .andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("Deve atualizar um livro")
+    public void updateBookTest() throws Exception {
+        Long id = 11L;
+        String json = new ObjectMapper().writeValueAsString(this.createNewBook());
+
+        Book updatingBook = Book.builder()
+            .id(id)
+            .title("some title")
+            .author("some author")
+            .isbn("001")
+            .build();
+
+        Book updatedBook = Book.builder()
+            .id(id)
+            .author("Arthur")
+            .isbn("001")
+            .title("As Aventuras")
+            .build();
+
+        BDDMockito
+            .given(this.service.getById(anyLong()))
+            .willReturn(Optional.of(updatingBook));
+
+        BDDMockito
+            .given(this.service.update(updatingBook))
+            .willReturn(updatedBook);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .put(BOOK_API.concat("/"+id))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(json);
+        
+        mvc.perform(request)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("id").isNotEmpty())
+            .andExpect(jsonPath("id").value(updatedBook.getId()))
+            .andExpect(jsonPath("title").value(updatedBook.getTitle()))
+            .andExpect(jsonPath("author").value(updatedBook.getAuthor()))
+            .andExpect(jsonPath("isbn").value(this.createNewBook().getIsbn()));
+    }
+
+    @Test
+    @DisplayName("Deve retornar 404 ao tentar atualizar um livro inexistente")
+    public void updateInexistentBookTest() throws Exception {
+        Long id = 11L;
+        String json = new ObjectMapper().writeValueAsString(this.createNewBook());
+
+        BDDMockito
+            .given(this.service.getById(anyLong()))
+            .willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .put(BOOK_API.concat("/"+id))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(json);
+        
+        mvc.perform(request)
+            .andExpect(status().isNotFound());
+    }
 }

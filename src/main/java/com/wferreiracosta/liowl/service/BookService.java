@@ -12,4 +12,6 @@ public interface BookService {
 
 	public void delete(Book book);
 
+	public Book update(Book book);
+
 }
