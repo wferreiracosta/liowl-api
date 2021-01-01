@@ -2,6 +2,9 @@ package com.wferreiracosta.liowl.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.wferreiracosta.liowl.exception.BusinessException;
@@ -75,5 +78,33 @@ public class BookServiceTest {
                 .hasMessage(errorMessage);
 
         Mockito.verify(this.repository, Mockito.never()).save(book);
+    }
+
+    @Test
+    @DisplayName("Deve obter um livro por Id")
+    public void getByIdTest(){
+        Long id = 1L;
+        Book book = this.createValidBook();
+        book.setId(id);
+        Mockito.when(this.repository.findById(id)).thenReturn(Optional.of(book));
+
+        Optional<Book> foundBook = this.service.getById(id);
+
+        assertThat(foundBook.isPresent()).isTrue();
+        assertThat(foundBook.get().getId()).isEqualTo(book.getId());
+        assertThat(foundBook.get().getAuthor()).isEqualTo(book.getAuthor());
+        assertThat(foundBook.get().getIsbn()).isEqualTo(book.getIsbn());
+        assertThat(foundBook.get().getTitle()).isEqualTo(book.getTitle());
+    }
+
+    @Test
+    @DisplayName("Deve retornar vazio ao obter um livro por id quando ele não existe na base.")
+    public void bookNotFoundByIdTest(){
+        Long id = 1L;
+        Mockito.when(this.repository.findById(id)).thenReturn(Optional.empty());
+
+        Optional<Book> book = this.service.getById(id);
+
+        assertThat(book.isPresent()).isFalse();
     }
 }
