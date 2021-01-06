@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,12 +29,16 @@ public class LoanController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Long create(@RequestBody LoanDTO loanDTO){
-        Book book = this.bookService.getBookByIsbn(loanDTO.getIsbn()).get();
+        Book book = this.bookService
+            .getBookByIsbn(loanDTO.getIsbn())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found for passed isbn"));
+
         Loan entity = Loan.builder()
             .book(book)
             .customer(loanDTO.getCustomer())
             .loanDate(LocalDate.now())
             .build();
+
         Loan savedLoand = this.service.save(entity);
         return savedLoand.getId();
     }
