@@ -29,9 +29,10 @@ public class LoanController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Long create(@RequestBody LoanDTO loanDTO){
-        Book book = this.bookService
+        Book book = bookService
             .getBookByIsbn(loanDTO.getIsbn())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found for passed isbn"));
+            .orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found for passed isbn"));
 
         Loan entity = Loan.builder()
             .book(book)
@@ -39,7 +40,7 @@ public class LoanController {
             .loanDate(LocalDate.now())
             .build();
 
-        Loan savedLoand = this.service.save(entity);
-        return savedLoand.getId();
+        entity = service.save(entity);
+        return entity.getId();
     }
 }

@@ -98,16 +98,14 @@ public class LoanControllerTest {
             .isbn("123")
             .customer("Fulano")
             .build();
-            
+
         String json = new ObjectMapper()
             .writeValueAsString(dto);
 
-        BDDMockito
-            .given(this.bookService.getBookByIsbn(dto.getIsbn()))
+        BDDMockito.given(bookService.getBookByIsbn("123"))
             .willReturn(Optional.empty());
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .post(LOAN_API)
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(LOAN_API)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json);
@@ -116,6 +114,6 @@ public class LoanControllerTest {
             .perform(request)
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("errors", hasSize(1)))
-            .andExpect(jsonPath("errors[0").value("Book not found for passed isbn"));
+            .andExpect(jsonPath("errors[0]").value("Book not found for passed isbn"));
     }
 }
