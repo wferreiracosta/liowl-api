@@ -34,7 +34,7 @@ public class BookRepositoryTest {
         assertThat(existsByIsbn).isTrue();
     }
 
-    private Book createNewBook(String isbn) {
+    public static Book createNewBook(String isbn) {
         return Book.builder()
             .author("Fulano")
             .isbn(isbn)
@@ -53,7 +53,7 @@ public class BookRepositoryTest {
     @Test
     @DisplayName("Deve obter um livro por id")
     public void findByIdTest(){
-        Book book = this.createNewBook("123");
+        Book book = createNewBook("123");
         this.entityManager.persist(book);
 
         Optional<Book> foundBook = this.repository.findById(book.getId());
@@ -64,7 +64,7 @@ public class BookRepositoryTest {
     @Test
     @DisplayName("Deve salvar um livro")
     public void saveBookTest(){
-        Book book = this.createNewBook("123");
+        Book book = createNewBook("123");
 
         Book savedBook = this.repository.save(book);
 
@@ -78,7 +78,7 @@ public class BookRepositoryTest {
     @Test
     @DisplayName("Deve apagar um livro")
     public void deleteBookTest(){
-        Book book = this.createNewBook("123");
+        Book book = createNewBook("123");
         this.entityManager.persist(book);
         Book foundBook = this.entityManager.find(Book.class, book.getId());
         this.repository.delete(foundBook);
