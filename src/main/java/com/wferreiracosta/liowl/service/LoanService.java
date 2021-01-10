@@ -4,6 +4,6 @@ import com.wferreiracosta.liowl.model.entity.Loan;
 
 public interface LoanService {
 
-	Loan save(Loan any);
+	Loan save(Loan loan);
 
 }

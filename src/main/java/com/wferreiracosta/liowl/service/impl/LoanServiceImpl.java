@@ -1,5 +1,6 @@
 package com.wferreiracosta.liowl.service.impl;
 
+import com.wferreiracosta.liowl.exception.BusinessException;
 import com.wferreiracosta.liowl.model.entity.Loan;
 import com.wferreiracosta.liowl.model.repository.LoanRepository;
 import com.wferreiracosta.liowl.service.LoanService;
@@ -16,8 +17,11 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public Loan save(Loan any) {
-        return this.repository.save(any);
+    public Loan save(Loan loan) {
+        if (this.repository.existsByBookAndNotReturned(loan.getBook())){
+            throw new BusinessException("Book already loaned");
+        }
+        return this.repository.save(loan);
     }
 
 }
