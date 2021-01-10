@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wferreiracosta.liowl.api.dto.LoanDTO;
+import com.wferreiracosta.liowl.api.dto.ReturnedLoanDTO;
 import com.wferreiracosta.liowl.exception.BusinessException;
 import com.wferreiracosta.liowl.model.entity.Book;
 import com.wferreiracosta.liowl.model.entity.Loan;
@@ -151,5 +152,38 @@ public class LoanControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("errors", hasSize(1)))
             .andExpect(jsonPath("errors[0]").value("Book already loaned"));
+    }
+
+    @Test
+    @DisplayName("Deve retornar um livro")
+    public void returnBookTest() throws Exception {
+        // cenario {returned: true}
+        ReturnedLoanDTO dto = ReturnedLoanDTO.builder()
+            .returned(true)
+            .build();
+
+        Loan loan = Loan.builder()
+            .id(1l)
+            .build();
+        
+        BDDMockito
+            .given(this.loanService.getById(Mockito.anyLong()))
+            .willReturn(Optional.of(loan));
+
+        String json = new ObjectMapper().writeValueAsString(dto);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .patch(LOAN_API.concat("/1"))
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json);
+
+        this.mvc
+            .perform(request)
+            .andExpect(status().isOk());
+
+        Mockito
+            .verify(loanService, Mockito.times(1))
+            .update(loan);
     }
 }
