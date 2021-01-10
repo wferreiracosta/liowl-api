@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import com.wferreiracosta.liowl.exception.BusinessException;
 import com.wferreiracosta.liowl.model.entity.Book;
@@ -91,5 +92,39 @@ public class LoanServicetest {
             .hasMessage("Book already loaned");
 
         verify(repository, Mockito.never()).save(savingLoan);
+    }
+
+    @Test
+    @DisplayName("Deve obter as informações de um empréstimo pelo ID")
+    public void getLoanDetaisTest(){
+        Long id = 1l;
+        Loan loan = this.createLoan();
+        loan.setId(id);
+
+        Mockito
+            .when(this.repository.findById(id))
+            .thenReturn(Optional.of(loan));
+        
+        Optional<Loan> result = this.service.getById(id);
+
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getId()).isEqualTo(loan.getId());
+        assertThat(result.get().getCustomer()).isEqualTo(loan.getCustomer());
+        assertThat(result.get().getBook().getId()).isEqualTo(loan.getBook().getId());
+        assertThat(result.get().getLoanDate()).isEqualTo(loan.getLoanDate());
+
+        verify(repository, Mockito.times(1)).findById(id);
+    }
+
+    public Loan createLoan(){
+        Book book = Book.builder()
+            .id(1l)
+            .build();
+
+        return Loan.builder()
+            .book(book)
+            .customer("Fulano")
+            .loanDate(LocalDate.now())
+            .build();
     }
 }

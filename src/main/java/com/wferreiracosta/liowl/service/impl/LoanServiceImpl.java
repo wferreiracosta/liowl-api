@@ -28,11 +28,12 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public Optional<Loan> getById(Long id) {
-        return null;
+        return this.repository.findById(id);
     }
 
     @Override
-    public void update(Loan loan) {
+    public Loan update(Loan loan) {
+        return null;
     }
 
 }
