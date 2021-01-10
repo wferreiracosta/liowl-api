@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wferreiracosta.liowl.api.dto.LoanDTO;
+import com.wferreiracosta.liowl.exception.BusinessException;
 import com.wferreiracosta.liowl.model.entity.Book;
 import com.wferreiracosta.liowl.model.entity.Loan;
 import com.wferreiracosta.liowl.service.BookService;
@@ -113,7 +114,42 @@ public class LoanControllerTest {
         this.mvc
             .perform(request)
             .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("errors", hasSize(1)));
+    }
+
+    @Test
+    @DisplayName("Deve retornar erro ao tentar fazer emprestimo de um livro emprestado")
+    public void loanedBookErrorCreateLoanTest() throws Exception {
+        LoanDTO dto = LoanDTO.builder()
+            .isbn("123")
+            .customer("Fulano")
+            .build();
+
+        String json = new ObjectMapper()
+            .writeValueAsString(dto);
+
+        Book book = Book.builder()
+            .id(1l)
+            .isbn("123")
+            .build();
+
+        BDDMockito
+            .given(this.bookService.getBookByIsbn(dto.getIsbn()))
+            .willReturn(Optional.of(book));
+        
+        BDDMockito
+            .given(this.loanService.save(Mockito.any(Loan.class)))
+            .willThrow(new BusinessException("Book already loaned"));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(LOAN_API)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json);
+
+        this.mvc
+            .perform(request)
+            .andExpect(status().isBadRequest())
             .andExpect(jsonPath("errors", hasSize(1)))
-            .andExpect(jsonPath("errors[0]").value("Book not found for passed isbn"));
+            .andExpect(jsonPath("errors[0]").value("Book already loaned"));
     }
 }
