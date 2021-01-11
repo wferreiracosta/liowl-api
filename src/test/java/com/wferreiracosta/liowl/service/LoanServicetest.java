@@ -127,4 +127,20 @@ public class LoanServicetest {
             .loanDate(LocalDate.now())
             .build();
     }
+
+    @Test
+    @DisplayName("Deve atualizar um empréstimo")
+    public void updateLoanTest(){
+        Loan loan = this.createLoan();
+        loan.setId(1L);
+        loan.setReturned(true);
+
+        Mockito.when(this.repository.save(loan))
+            .thenReturn(loan);
+
+        Loan updatedLoan = this.service.update(loan);
+
+        assertThat(updatedLoan.getReturned()).isTrue();
+        verify(this.repository).save(loan);
+    }
 }
