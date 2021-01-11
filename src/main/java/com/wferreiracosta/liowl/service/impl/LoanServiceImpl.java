@@ -2,11 +2,14 @@ package com.wferreiracosta.liowl.service.impl;
 
 import java.util.Optional;
 
+import com.wferreiracosta.liowl.api.dto.LoanFilterDTO;
 import com.wferreiracosta.liowl.exception.BusinessException;
 import com.wferreiracosta.liowl.model.entity.Loan;
 import com.wferreiracosta.liowl.model.repository.LoanRepository;
 import com.wferreiracosta.liowl.service.LoanService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,6 +37,11 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public Loan update(Loan loan) {
         return this.repository.save(loan);
+    }
+
+    @Override
+    public Page<Loan> find(LoanFilterDTO loanFilterDTO, Pageable pageable) {
+        return null;
     }
 
 }

@@ -98,7 +98,7 @@ public class LoanServicetest {
     @DisplayName("Deve obter as informações de um empréstimo pelo ID")
     public void getLoanDetaisTest(){
         Long id = 1l;
-        Loan loan = this.createLoan();
+        Loan loan = createLoan();
         loan.setId(id);
 
         Mockito
@@ -116,7 +116,7 @@ public class LoanServicetest {
         verify(repository, Mockito.times(1)).findById(id);
     }
 
-    public Loan createLoan(){
+    public static Loan createLoan(){
         Book book = Book.builder()
             .id(1l)
             .build();
@@ -131,7 +131,7 @@ public class LoanServicetest {
     @Test
     @DisplayName("Deve atualizar um empréstimo")
     public void updateLoanTest(){
-        Loan loan = this.createLoan();
+        Loan loan = createLoan();
         loan.setId(1L);
         loan.setReturned(true);
 
