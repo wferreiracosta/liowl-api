@@ -1,6 +1,6 @@
 package com.wferreiracosta.liowl.api.resource;
 
-import static com.wferreiracosta.liowl.service.LoanServicetest.createLoan;
+import static com.wferreiracosta.liowl.service.LoanServiceTest.createLoan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
