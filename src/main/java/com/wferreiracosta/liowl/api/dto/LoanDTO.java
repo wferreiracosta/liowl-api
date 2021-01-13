@@ -18,8 +18,6 @@ public class LoanDTO {
     private String isbn;
     @NotEmpty
     private String customer;
-    @NotEmpty
-    private String email;
     private BookDTO book;
 
 }
