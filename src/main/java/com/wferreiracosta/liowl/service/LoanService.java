@@ -3,6 +3,7 @@ package com.wferreiracosta.liowl.service;
 import java.util.Optional;
 
 import com.wferreiracosta.liowl.api.dto.LoanFilterDTO;
+import com.wferreiracosta.liowl.model.entity.Book;
 import com.wferreiracosta.liowl.model.entity.Loan;
 
 import org.springframework.data.domain.Page;
@@ -17,5 +18,7 @@ public interface LoanService {
 	Loan update(Loan loan);
 
 	Page<Loan> find(LoanFilterDTO loanFilterDTO, Pageable pageable);
+
+	Page<Loan> getLoansByBook(Book book, Pageable pageable);
 
 }

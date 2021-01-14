@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.wferreiracosta.liowl.api.dto.LoanFilterDTO;
 import com.wferreiracosta.liowl.exception.BusinessException;
+import com.wferreiracosta.liowl.model.entity.Book;
 import com.wferreiracosta.liowl.model.entity.Loan;
 import com.wferreiracosta.liowl.model.repository.LoanRepository;
 import com.wferreiracosta.liowl.service.LoanService;
@@ -42,6 +43,11 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public Page<Loan> find(LoanFilterDTO loanFilterDTO, Pageable pageable) {
         return this.repository.findByBookIsbnOrCustomer(loanFilterDTO.getIsbn(), loanFilterDTO.getCustomer(), pageable);
+    }
+
+    @Override
+    public Page<Loan> getLoansByBook(Book book, Pageable pageable) {
+        return this.repository.findByBook(book, pageable);
     }
 
 }
