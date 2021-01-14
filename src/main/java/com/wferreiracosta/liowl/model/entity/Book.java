@@ -38,7 +38,7 @@ public class Book {
     @Column
     private String isbn;
 
-    @OneToMany(mappedBy = "Book", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private List<Loan> loans;
 
 }
