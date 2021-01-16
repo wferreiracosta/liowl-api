@@ -27,6 +27,9 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "customer_email")
+    private String customerEmail;
+
     @Column(length = 100)
     private String customer;
 

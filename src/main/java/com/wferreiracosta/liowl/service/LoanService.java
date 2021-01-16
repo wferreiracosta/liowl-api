@@ -1,5 +1,6 @@
 package com.wferreiracosta.liowl.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.wferreiracosta.liowl.api.dto.LoanFilterDTO;
@@ -21,4 +22,5 @@ public interface LoanService {
 
 	Page<Loan> getLoansByBook(Book book, Pageable pageable);
 
+	List<Loan> getAllLateLoans();
 }

@@ -1,5 +1,8 @@
 package com.wferreiracosta.liowl.model.repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import com.wferreiracosta.liowl.model.entity.Book;
 import com.wferreiracosta.liowl.model.entity.Loan;
 
@@ -19,5 +22,8 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 	Page<Loan> findByBookIsbnOrCustomer(@Param("isbn") String isbn, @Param("customer") String customer, Pageable pageable);
 
 	Page<Loan> findByBook(Book book, Pageable pageable);
+
+    @Query(value = "select l from Loan l where l.loanDate <= :threeDaysAgo and (l.returned is null or l.returned is false)")
+	List<Loan> findByLoanDateLessThanAndNotReturned(@Param("threeDaysAgo") LocalDate threeDaysAgo);
     
 }
