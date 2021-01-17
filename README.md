@@ -1,6 +1,35 @@
 # Liowl-API
 
-:books: API Liowl do projeto de bibliotecas
+A API Liowl foi desenvolvida para realizar o controle de aluguel de livros. Ela realiza diversas atividades que seriam necessárias para o estabelecimento como cadastrar livros e pegar livros emprestados.
+
+## About
+
+Este projeto faz parte do meu portfólio pessoal, ficarei feliz se você pudesse me fornecer algum feedback sobre o projeto, código e estrutura.
+
+## Getting Started
+### Installing
+
+**Cloning the Repository**
+
+```
+$ git clone https://github.com/wferreiracosta/liowl-api.git
+
+$ cd liowl-api
+```
+### Routes
+
+**Base URL**
+```
+http://localhost:8080/api/
+```
+
+**Swagger**
+
+```
+http://localhost:8080/swagger-ui.html
+```
+
+**Book Routes**
 
 | Método |                                       | Content                                                | Success          | Error | Observação |
 |--------|---------------------------------------|--------------------------------------------------------|------------------|-------|------------|
