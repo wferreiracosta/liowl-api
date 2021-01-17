@@ -13,6 +13,7 @@ import com.wferreiracosta.liowl.api.dto.BookDTO;
 import com.wferreiracosta.liowl.exception.BusinessException;
 import com.wferreiracosta.liowl.model.entity.Book;
 import com.wferreiracosta.liowl.service.BookService;
+import com.wferreiracosta.liowl.service.EmailService;
 import com.wferreiracosta.liowl.service.LoanService;
 
 import org.hamcrest.Matchers;
@@ -51,6 +52,9 @@ public class BookControllerTest {
 
     @MockBean
     LoanService loanService;
+
+    @MockBean
+    EmailService emailService;
     
     private BookDTO createNewBook() {
         return BookDTO.builder()

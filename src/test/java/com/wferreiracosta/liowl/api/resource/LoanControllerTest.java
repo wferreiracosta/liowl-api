@@ -18,6 +18,7 @@ import com.wferreiracosta.liowl.exception.BusinessException;
 import com.wferreiracosta.liowl.model.entity.Book;
 import com.wferreiracosta.liowl.model.entity.Loan;
 import com.wferreiracosta.liowl.service.BookService;
+import com.wferreiracosta.liowl.service.EmailService;
 import com.wferreiracosta.liowl.service.LoanService;
 
 import org.hamcrest.Matchers;
@@ -56,6 +57,9 @@ public class LoanControllerTest {
 
     @MockBean
     LoanService loanService;
+
+    @MockBean
+    EmailService emailService;
 
     @Test
     @DisplayName("Deve realizar um emprestimo")
