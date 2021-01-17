@@ -28,11 +28,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
+@Api("Book API")
 public class BookController {
     
     private final BookService service;
@@ -41,6 +46,7 @@ public class BookController {
     
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("Create a book")
     public BookDTO create( @RequestBody @Valid BookDTO bookDTO ){
         Book entity = this.modelMapper.map(bookDTO, Book.class);
         Book savedBook = this.service.save(entity);
@@ -48,7 +54,8 @@ public class BookController {
         return savedBookDTO;
     }
 
-    @GetMapping("{id}")
+    @GetMapping("{id}") 
+    @ApiOperation("Obtains a book details by id")
     public BookDTO get(@PathVariable Long id){
         return this.service
             .getById(id)
@@ -58,6 +65,10 @@ public class BookController {
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("Deletes a book by id")
+    @ApiResponses({
+        @ApiResponse(code = 204, message = "Book succesfully deleted")
+    })
     public void delete(@PathVariable Long id){
         Book book = this.service
             .getById(id)
@@ -66,6 +77,7 @@ public class BookController {
     }
 
     @PutMapping("{id}")
+    @ApiOperation("Updates a book")
     public BookDTO update(@PathVariable Long id, BookDTO bookDTO){
         return this.service
             .getById(id)
@@ -79,6 +91,7 @@ public class BookController {
     }
 
     @GetMapping
+    @ApiOperation("Find books by params")
     public Page<BookDTO> find(BookDTO bookDTO, Pageable pageRequest){
         Book filter = this.modelMapper.map(bookDTO, Book.class);
         Page<Book> result = this.service.find(filter, pageRequest);
@@ -90,6 +103,7 @@ public class BookController {
     }
 
     @GetMapping("{id}/loans")
+    @ApiOperation("Gets book loans")
     public Page<LoanDTO> loansByBook(@PathVariable Long id, Pageable pageable){
         Book book = this.service.getById(id)
             .orElseThrow(
