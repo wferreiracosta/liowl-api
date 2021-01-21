@@ -1,5 +1,7 @@
 # Liowl-API
 
+[![Build Status](https://www.travis-ci.com/wferreiracosta/liowl-api.svg?branch=master)](https://www.travis-ci.com/wferreiracosta/liowl-api)
+
 A API Liowl foi desenvolvida para realizar o controle de aluguel de livros. Ela realiza diversas atividades que seriam necessárias para o estabelecimento como cadastrar livros e pegar livros emprestados.
 
 ## About
