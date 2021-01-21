@@ -5,3 +5,10 @@ jdk:
 dist: trusty
 before_install:
   - chmod +x mvnw
+deploy:  
+  provider: heroku  
+  app: app-liowl
+  on:    
+    branch: master
+  api_key:
+    secure: ${{ secrets.HEROKU_TOKEN }}
